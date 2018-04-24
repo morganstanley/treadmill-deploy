@@ -1,8 +1,3 @@
-# Ignore compiled/temporary files
-__pycache__
-*.pyc
-.*
-
 # Ignore perltidy backup files
 *.bak
 
@@ -12,13 +7,5 @@ __pycache__
 # Keep track of .keepme files
 !.keepme
 
-#lint configs should be included
-!.pylintrc
-
 # Ignore generated files
-*.egg-info
-lint.log
-pep8.log
-doc/build
-build/
-dist/
+s6/build/
