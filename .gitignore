@@ -9,3 +9,4 @@
 
 # Ignore generated files
 s6/build/
+treadmill-aws/build/
