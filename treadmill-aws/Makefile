@@ -30,13 +30,20 @@ wheels: venv
 		&& cd $(TREADMILL_AWS_DIR)                                    \
 		&& $(TREADMILL_DIR)/scripts/setup_wheel_cache.sh -w $(WHEELS)
 
-install: venv
+sbin: \
+	$(VENV)/sbin/start_node.sh \
+	$(VENV)/sbin/start_master.sh
+
+$(VENV)/sbin/%.sh: ./sbin/%.sh
+	install -D $< $@
+
+install: venv sbin
 	source $(VENV)/bin/activate         \
 		&& pip install -f $(WHEELS)     \
 		    --only-binary               \
 		    --no-cache-dir              \
 		    --no-index                  \
-		    Treadmill Treadmill_AWS
+		     kazoo[sasl]==2.4.0.dev0 Treadmill Treadmill_AWS
 	virtualenv-3 --relocatable $(VENV)
 
 rpm:
@@ -49,3 +56,5 @@ rpm:
 		-D "__python $(RPMDIR)/BUILDROOT/opt/treadmill/bin/python"   \
 		-D "_topdir $(RPMDIR)"                                       \
 		treadmill-aws.spec
+
+.PHONY: sbin
