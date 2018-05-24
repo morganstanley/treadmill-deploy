@@ -11,6 +11,11 @@ WHEELS=$(BLD)/wheels
 TREADMILL_DIR=$(PWD)/../../treadmill
 TREADMILL_AWS_DIR=$(PWD)/../../treadmill-aws
 
+REPO_TAG=$(shell git --git-dir=${TREADMILL_AWS_DIR}/.git describe --tags HEAD --long)
+REPO_TAGFMT=$(shell echo ${REPO_TAG} | sed 's/-g/-/')
+REPO_VER=$(shell echo ${REPO_TAGFMT} | cut -d '-' -f 1)
+REPO_REL=$(shell echo ${REPO_TAGFMT} | cut -d '-' -f 2,3 | sed 's/-/_/')
+
 clean:
 	rm -rf $(BLD)
 
@@ -48,4 +53,6 @@ rpm:
 	rpmbuild -bb                                                     \
 		-D "__python $(RPMDIR)/BUILDROOT/opt/treadmill/bin/python"   \
 		-D "_topdir $(RPMDIR)"                                       \
+		-D "_version $(REPO_VER)"                             \
+		-D "_release $(REPO_REL)"                             \
 		treadmill-aws.spec
