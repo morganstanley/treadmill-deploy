@@ -3,8 +3,8 @@
 PWD=$(shell pwd)
 
 SRC=$(PWD)/../submodules
-BLD=$(PWD)/build
-RPMDIR=$(BLD)/rpms
+RPMDIR=$(PWD)/build/rpms
+BLD=$(RPMDIR)/BUILD/opt/s6
 
 all: skalibs execline s6 s6-rc s6-dns s6-networking
 
@@ -86,8 +86,7 @@ _include_list:
 	cd $(BLD) && find ./include -type f \
 		| sed "s/^\.\/include/%{_includedir}/g" > include.lst
 
-rpm: filelist
-	rm -rf $(RPMDIR)
+rpm:
 	mkdir -p $(RPMDIR)/SOURCES
 	mkdir -p $(RPMDIR)/SRPMS
 	mkdir -p $(RPMDIR)/RPMS
@@ -95,4 +94,4 @@ rpm: filelist
 	mkdir -p $(RPMDIR)/BUILDROOT
 	rpmbuild -bb \
 		-D "_topdir $(RPMDIR)" \
-		-D "_builddir $(BLD)" skarnet.spec
+		-D "_builddir $(RPMDIR)/BUILD" skarnet.spec
