@@ -21,15 +21,11 @@ skarnet.org's small & secure supervision software suite.
 
 
 %install
-mkdir -p %{buildroot}/%{_bindir}
-mkdir -p %{buildroot}/%{_libexecdir}
-cp -r %{_builddir}/bin/* %{buildroot}/%{_bindir}
-cp -r %{_builddir}/libexec/* %{buildroot}/%{_libexecdir}
+cp -r %{_builddir}/opt %{buildroot}/opt
 
 %files
 %defattr(-,root,root,-)
-%include %{_builddir}/bin.lst
-%include %{_builddir}/libexec.lst
+/opt/s6/*
 %doc
 
 
