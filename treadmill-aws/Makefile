@@ -64,4 +64,10 @@ rpm:
 		-D "_release $(REPO_REL)"                             \
 		treadmill-aws.spec
 
+install_rpm:
+	[ ! -z $(rpm_install_dir) ] || echo must run make rpm_install_dir=...
+	mkdir -p $(rpm_install_dir)
+	rsync -r $(RPMDIR)/RPMS $(rpm_install_dir)
+	rsync -r $(RPMDIR)/SRPMS $(rpm_install_dir)
+
 .PHONY: sbin
