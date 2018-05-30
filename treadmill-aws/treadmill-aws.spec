@@ -1,6 +1,6 @@
 Name:           Treadmill_AWS
-Version:        3.7
-Release:        2%{?dist}
+Version:        %{_version} 
+Release:        %{_release}%{?dist}
 Summary:        Treadmill AWS
 
 License:        Apache 2.0
