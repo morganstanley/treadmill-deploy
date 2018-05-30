@@ -5,6 +5,8 @@ PWD=$(shell pwd)
 SRC=$(PWD)/../submodules
 RPMDIR=$(PWD)/build/rpms
 BLD=$(RPMDIR)/BUILD/opt/s6
+S6_VERSION=$(shell git --git-dir ../submodules/s6/.git describe --tags --match "v*" 2>/dev/null | cut -b 2-)
+REPO_COMMITS=$(shell git log --oneline | wc -l)
 
 all: skalibs execline s6 s6-rc s6-dns s6-networking
 
@@ -94,4 +96,12 @@ rpm:
 	mkdir -p $(RPMDIR)/BUILDROOT
 	rpmbuild -bb \
 		-D "_topdir $(RPMDIR)" \
+		-D "_version $(S6_VERSION)" \
+		-D "_release $(REPO_COMMITS)" \
 		-D "_builddir $(RPMDIR)/BUILD" skarnet.spec
+
+install_rpm:
+	[ ! -z $(rpm_install_dir) ] || echo must run make rpm_install_dir=...
+	mkdir -p $(rpm_install_dir)
+	rsync -r $(RPMDIR)/RPMS $(rpm_install_dir)
+	rsync -r $(RPMDIR)/SRPMS $(rpm_install_dir)

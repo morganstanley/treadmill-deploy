@@ -1,6 +1,6 @@
 Name:           skarnet
-Version:        2.7.1.1
-Release:        2%{?dist}
+Version:        %{_version} 
+Release:        %{_release}%{?dist}
 Summary:        Skarnet Suite
 
 License:        ISC
