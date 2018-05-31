@@ -109,7 +109,7 @@ ${DISTRO}/bin/treadmill \
     --debug \
     admin install \
         --distro ${DISTRO} \
-        --profile ms \
+        --profile aws \
         --install-dir ${INSTALL_DIR} \
         --config  ${INSTALL_DIR}/cell_config.yml \
         --config  ${INSTALL_DIR}/server_config.yml \

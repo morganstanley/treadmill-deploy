@@ -93,7 +93,7 @@ exec ${DISTRO}/bin/treadmill \
     --debug \
     admin install \
         --distro ${DISTRO} \
-        --profile ms \
+        --profile aws \
         --install-dir ${INSTALL_DIR} \
         --config ${INSTALL_DIR}/cell_config.yml \
         --override ldap_list=${TREADMILL_LDAP_LIST} \
