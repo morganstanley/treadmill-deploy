@@ -3,6 +3,13 @@
 DISTRO=$(cd $(dirname $0)/.. && pwd)
 
 usage() {
+    MSG=$1
+    if [ "$MSG" != "" ]; then
+        echo Usage error:
+        echo 
+        echo "  $MSG"
+        echo
+    fi
     cat << USAGE
 Usage: $0 [OPTIONS] <install-dir>
 
@@ -54,13 +61,13 @@ if [ -z $TREADMILL_LDAP_LIST ]; then
     TREADMILL_LDAP_LIST=$TREADMILL_LDAP
 fi
 
-[ ! -z $INSTALL_DIR ] || usage
-[ ! -z $TREADMILL_CELL ] || usage
-[ ! -z $TREADMILL_LDAP ] || usage
-[ ! -z $TREADMILL_LDAP_LIST ] || usage
-[ ! -z $TREADMILL_LDAP_SUFFIX ] || usage
-[ ! -z $TREADMILL_DNS_DOMAIN ] || usage
-[ ! -z $TREADMILL_RUNTIME ] || usage
+[ ! -z $INSTALL_DIR ] || usage "Missing argument: <install-dir>."
+[ ! -z $TREADMILL_CELL ] || usage "Missing option: -c CELL"
+[ ! -z $TREADMILL_LDAP ] || usage "Missing option: -l LDAP"
+[ ! -z $TREADMILL_LDAP_LIST ] || usage "Missing option: -L LDAP_LIST"
+[ ! -z $TREADMILL_LDAP_SUFFIX ] || usage "Missing option: -b LDAP_SUFFIX"
+[ ! -z $TREADMILL_DNS_DOMAIN ] || usage "Missing option: -d DNS_DOMAIN"
+[ ! -z $TREADMILL_RUNTIME ] || usage "Missing option: -r RUNTIME."
 
 export TREADMILL_CELL
 export TREADMILL_LDAP
