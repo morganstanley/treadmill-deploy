@@ -18,7 +18,6 @@ Options:
    -l <TREADMILL_LDAP>           : LDAP server - ldap://<host>:<port>.
    -b <TREADMILL_LDAP_SUFFIX>    : LDAP suffix.
    -d <TREADMILL_DNS_DOMAIN>     : DNS domain.
-   -r <TREADMILL_RUNTIME>        : Runtime (docker)
    -h                            : Print help and exit
 USAGE
 
@@ -42,9 +41,6 @@ while getopts "hc:l:L:b:d:r:" OPT; do
         d)
             TREADMILL_DNS_DOMAIN=${OPTARG}
             ;;
-        r)
-            TREADMILL_RUNTIME=${OPTARG}
-            ;;
         h)
             usage
             ;;
@@ -67,14 +63,12 @@ fi
 [ ! -z $TREADMILL_LDAP_LIST ] || usage "Missing option: -L LDAP_LIST"
 [ ! -z $TREADMILL_LDAP_SUFFIX ] || usage "Missing option: -b LDAP_SUFFIX"
 [ ! -z $TREADMILL_DNS_DOMAIN ] || usage "Missing option: -d DNS_DOMAIN"
-[ ! -z $TREADMILL_RUNTIME ] || usage "Missing option: -r RUNTIME."
 
 export TREADMILL_CELL
 export TREADMILL_LDAP
 export TREADMILL_LDAP_LIST
 export TREADMILL_LDAP_SUFFIX
 export TREADMILL_DNS_DOMAIN
-export TREADMILL_RUNTIME
 
 if [ -n "$*" ]; then
     MAYBE_OVERRIDES=$(IFS=, ; echo "--override $*");
