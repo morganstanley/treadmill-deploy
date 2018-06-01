@@ -3,6 +3,13 @@
 DISTRO=$(cd $(dirname $0)/.. && pwd)
 
 usage() {
+    MSG=$1
+    if [ "$MSG" != "" ]; then
+        echo Usage error:
+        echo 
+        echo "  $MSG"
+        echo
+    fi
     cat << USAGE
 Usage: $0 [OPTIONS] <install-dir>
 
@@ -29,9 +36,6 @@ while getopts "c:i:l:L:b:d:" OPT; do
     case "${OPT}" in
         c)
             TREADMILL_CELL=${OPTARG}
-            ;;
-        i)
-            MYID=${OPTARG}
             ;;
         l)
             TREADMILL_LDAP=${OPTARG}
@@ -61,13 +65,12 @@ if [ -z $TREADMILL_LDAP_LIST ]; then
     TREADMILL_LDAP_LIST=$TREADMILL_LDAP
 fi
 
-[ ! -z $INSTALL_DIR ] || usage
-[ ! -z $TREADMILL_CELL ] || usage
-[ ! -z $TREADMILL_LDAP ] || usage
-[ ! -z $TREADMILL_LDAP_LIST ] || usage
-[ ! -z $TREADMILL_LDAP_SUFFIX ] || usage
-[ ! -z $TREADMILL_DNS_DOMAIN ] || usage
-[ ! -z $TREADMILL_RUNTIME ] || usage
+[ ! -z $INSTALL_DIR ] || usage "Missing argument: <install-dir>."
+[ ! -z $TREADMILL_CELL ] || usage "Missing option: -c CELL"
+[ ! -z $TREADMILL_LDAP ] || usage "Missing option: -l LDAP"
+[ ! -z $TREADMILL_LDAP_LIST ] || usage "Missing option: -L LDAP_LIST"
+[ ! -z $TREADMILL_LDAP_SUFFIX ] || usage "Missing option: -b LDAP_SUFFIX"
+[ ! -z $TREADMILL_DNS_DOMAIN ] || usage "Missing option: -d DNS_DOMAIN"
 
 export TREADMILL_CELL
 export TREADMILL_LDAP
@@ -89,6 +92,9 @@ ${DISTRO}/bin/treadmill \
     admin ldap cell configure ${TREADMILL_CELL} \
     > ${INSTALL_DIR}/cell_config.yml
 
+# TODO: --master-id is not required, it is needed on zk startup but not
+#       master startup.
+
 exec ${DISTRO}/bin/treadmill \
     --debug \
     admin install \
@@ -98,5 +104,5 @@ exec ${DISTRO}/bin/treadmill \
         --config ${INSTALL_DIR}/cell_config.yml \
         --override ldap_list=${TREADMILL_LDAP_LIST} \
     master \
-        --master-id $MYID \
+        --master-id 0 \
         --run
