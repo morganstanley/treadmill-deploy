@@ -1,7 +1,7 @@
 [Unit]
 Description=Treadmill node services
 Requires=treadmill-sysconfig-node.service docker-latest.service
-After=network.target treadmill-sysconfig-node.service docker-latest.service
+After=network.target treadmill-sysconfig-node.service
 
 [Service]
 User=root
