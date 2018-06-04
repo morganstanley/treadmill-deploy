@@ -3,9 +3,10 @@ Description=Zookeeper
 After=network.target
 
 [Service]
-User=treadmld
-Group=treadmld
+User=zookeeper
+Group=zookeeper
 EnvironmentFile=/etc/sysconfig/zookeeper
+ExecStartPre=/usr/bin/bash -c "/usr/bin/echo $IDX > /var/lib/zookeeper/myid"
 ExecStart=/bin/java -cp $CLASSPATH $LOG4J $JVMFLAGS $ZOOMAIN $ZOOCFG
 
 [Install]
