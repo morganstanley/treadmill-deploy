@@ -1,7 +1,7 @@
 [Unit]
 Description=Treadmill master services
 Requires=treadmill-sysconfig-master.service docker-latest.service
-After=network.target treadmill-sysconfig-master.service docker-latest.service
+After=network.target treadmill-sysconfig-master.service
 
 [Service]
 User=root
