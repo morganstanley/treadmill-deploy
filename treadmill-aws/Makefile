@@ -50,6 +50,7 @@ install: venv sbin
 		    --no-index                  \
 		     kazoo[sasl]==2.4.0.dev0 Treadmill Treadmill_AWS
 	virtualenv-3 --relocatable $(VENV)
+	cp service/*.service $(RPMDIR)/BUILD
 
 rpm:
 	mkdir -p $(RPMDIR)/SOURCES

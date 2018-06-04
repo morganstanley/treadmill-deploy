@@ -1,0 +1,16 @@
+[Unit]
+Description=Treadmill master services
+Requires=treadmill-sysconfig-master.service docker-latest.service
+After=network.target treadmill-sysconfig-master.service docker-latest.service
+
+[Service]
+User=root
+Group=root
+SyslogIdentifier=treadmill
+EnvironmentFile=/etc/sysconfig/treadmill-master
+ExecStart=/opt/treadmill/sbin/start_master.sh /var/tmp/treadmill-master
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

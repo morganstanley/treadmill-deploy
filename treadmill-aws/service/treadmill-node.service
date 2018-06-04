@@ -1,0 +1,16 @@
+[Unit]
+Description=Treadmill node services
+Requires=treadmill-sysconfig-node.service docker-latest.service
+After=network.target treadmill-sysconfig-node.service docker-latest.service
+
+[Service]
+User=root
+Group=root
+EnvironmentFile=/etc/sysconfig/treadmill-node
+ExecStartPre=/bin/mount --make-rprivate /
+ExecStart=/opt/treadmill/sbin/start_node.sh /var/tmp/treadmill
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

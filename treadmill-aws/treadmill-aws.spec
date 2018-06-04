@@ -22,7 +22,11 @@ Treadmill (AWS)
 
 %install
 cp -r %{_builddir}/opt %{buildroot}/opt
-
+mkdir -p %{buildroot}/lib/systemd/system/
+install -m755 %{_builddir}/treadmill-master.service %{buildroot}/lib/systemd/system/
+install -m755 %{_builddir}/treadmill-sysconfig-master.service %{buildroot}/lib/systemd/system/
+install -m755 %{_builddir}/treadmill-node.service %{buildroot}/lib/systemd/system/
+install -m755 %{_builddir}/treadmill-sysconfig.service %{buildroot}/lib/systemd/system/
 
 %post
 
@@ -30,7 +34,10 @@ cp -r %{_builddir}/opt %{buildroot}/opt
 %files
 %defattr(-,root,root,-)
 /opt/treadmill/*
-
+/lib/systemd/system/treadmill-master.service
+/lib/systemd/system/treadmill-sysconfig-master.service
+/lib/systemd/system/treadmill-node.service
+/lib/systemd/system/treadmill-sysconfig-node.service
 
 %changelog
 
