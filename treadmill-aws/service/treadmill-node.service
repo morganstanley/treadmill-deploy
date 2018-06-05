@@ -1,6 +1,6 @@
 [Unit]
 Description=Treadmill node services
-Requires=treadmill-sysconfig-node.service docker-latest.service
+Requires=treadmill-sysconfig-node.service 
 After=network.target treadmill-sysconfig-node.service
 
 [Service]
