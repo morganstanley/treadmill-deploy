@@ -26,7 +26,7 @@ mkdir -p %{buildroot}/lib/systemd/system/
 install -m755 %{_builddir}/treadmill-master.service %{buildroot}/lib/systemd/system/
 install -m755 %{_builddir}/treadmill-sysconfig-master.service %{buildroot}/lib/systemd/system/
 install -m755 %{_builddir}/treadmill-node.service %{buildroot}/lib/systemd/system/
-install -m755 %{_builddir}/treadmill-sysconfig.service %{buildroot}/lib/systemd/system/
+install -m755 %{_builddir}/treadmill-sysconfig-node.service %{buildroot}/lib/systemd/system/
 
 %post
 
