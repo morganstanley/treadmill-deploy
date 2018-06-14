@@ -18,7 +18,6 @@ Options:
    -l <TREADMILL_LDAP>           : LDAP server - ldap://<host>:<port>.
    -b <TREADMILL_LDAP_SUFFIX>    : LDAP suffix.
    -d <TREADMILL_DNS_DOMAIN>     : DNS domain.
-   -i <MYID>                     : Master ID (1,2,3)
    -h                            : Print help and exit
 USAGE
 
@@ -104,5 +103,4 @@ exec ${DISTRO}/bin/treadmill \
         --config ${INSTALL_DIR}/cell_config.yml \
         --override ldap_list=${TREADMILL_LDAP_LIST} \
     master \
-        --master-id 0 \
-        --run
+	--run
