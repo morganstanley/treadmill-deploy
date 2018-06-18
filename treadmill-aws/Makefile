@@ -36,6 +36,8 @@ wheels: venv
 		&& $(TREADMILL_DIR)/scripts/setup_wheel_cache.sh -w $(WHEELS)
 
 sbin: \
+	$(VENV)/sbin/opts.sh \
+	$(VENV)/sbin/start.sh \
 	$(VENV)/sbin/start_node.sh \
 	$(VENV)/sbin/start_master.sh
 
