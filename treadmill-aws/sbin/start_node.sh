@@ -20,7 +20,9 @@ HOSTNAME=$(hostname --fqdn)
 export HOSTNAME
 
 # NOTE: Obtaining tickets is needed for the LDAP connection below.
+export KRB5CCNAME=$(mktemp)
 kinit -k -l 1d
+klist
 
 mkdir -pv ${INSTALL_DIR}
 
