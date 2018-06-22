@@ -82,7 +82,7 @@ if [ -z $TREADMILL_ISA ]; then
     TREADMILL_ISA=node
 fi    
 
-echo Configuring Treadmill $TREADMILL_ISA"
+echo Configuring Treadmill $TREADMILL_ISA
 env | grep TREADMILL_
 
 
