@@ -35,6 +35,9 @@ wheels: venv
 		&& cd $(TREADMILL_AWS_DIR)                                    \
 		&& $(TREADMILL_DIR)/scripts/setup_wheel_cache.sh -w $(WHEELS)
 
+wheels_cache:
+	aws s3 sync $(S3_WHEELS_CACHE) $(WHEELS)
+
 sbin: \
 	$(VENV)/sbin/opts.sh \
 	$(VENV)/sbin/start.sh \
@@ -74,5 +77,13 @@ install_rpm:
 	mkdir -p $(rpm_install_dir)
 	rsync -r $(RPMDIR)/RPMS $(rpm_install_dir)
 	rsync -r $(RPMDIR)/SRPMS $(rpm_install_dir)
+
+i:
+	@echo "BLD           : $(BLD)"
+	@echo "RPMDIR        : $(RPMDIR)"
+	@echo "VENV          : $(VENV)"
+	@echo "WHEELS        : $(WHEELS)"
+	@echo "REPO_VER      : $(REPO_VER)"
+	@echo "REPO_TAG      : $(REPO_TAG)"
 
 .PHONY: sbin
