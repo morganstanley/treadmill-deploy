@@ -1,6 +1,8 @@
 #!/bin/sh
 
-DISTRO=$(cd $(dirname $0)/.. && pwd)
+if [ -z $DISTRO ]; then
+    DISTRO=$(cd $(dirname $0)/.. && pwd)
+fi    
 
 function usage {
     MSG=$1
@@ -11,7 +13,11 @@ function usage {
         echo
     fi
     cat << USAGE
-Usage: $0 [OPTIONS] <install-dir>
+Usage: 
+    $0 [OPTIONS]
+
+Sub-component usage:    
+    $0 [OPTIONS] -- -h
 
 Options:
    -c <CELL>                     : Cell name.
@@ -26,7 +32,7 @@ USAGE
     exit 1
 }
 
-while getopts "c:l:L:b:d:t:" OPT; do
+while getopts "c:l:L:b:d:t:i:" OPT; do
     case "${OPT}" in
         c)
             TREADMILL_CELL=${OPTARG}
@@ -59,8 +65,6 @@ while getopts "c:l:L:b:d:t:" OPT; do
 done
 shift $((OPTIND-1))
 
-INSTALL_DIR=$1
-
 if [ -z $TREADMILL_LDAP_LIST ]; then
     TREADMILL_LDAP_LIST=$TREADMILL_LDAP
 fi
@@ -84,5 +88,3 @@ fi
 
 echo Configuring Treadmill $TREADMILL_ISA
 env | grep TREADMILL_
-
-
