@@ -25,7 +25,7 @@ $(VENV)/bin/activate:
 	mkdir -p $(VENV)
 	virtualenv-3 $(VENV)                 \
 		&& source $(VENV)/bin/activate   \
-		&& pip install -U setuptools pip
+		&& pip install --no-cache-dir --no-index --find-links $(WHEELS) -U setuptools pip
 	virtualenv-3 --relocatable $(VENV)
 
 wheels: venv
@@ -46,7 +46,7 @@ $(VENV)/sbin/%.sh: ./sbin/%.sh
 
 install: venv sbin
 	source $(VENV)/bin/activate         \
-		&& pip install -f $(WHEELS)     \
+		&& pip install --no-cache-dir  -f $(WHEELS)  \
 		    --only-binary               \
 		    --no-cache-dir              \
 		    --no-index                  \
