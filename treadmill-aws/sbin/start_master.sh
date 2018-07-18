@@ -2,7 +2,12 @@
 
 source ${0%/*}/opts.sh
 
-kinit -k -l 1d
+# Repeat kinit until successful
+until kinit -k -l 1d;
+do
+    echo Sleeping until server joined to IPA...
+    sleep 10
+done
 
 set -e
 

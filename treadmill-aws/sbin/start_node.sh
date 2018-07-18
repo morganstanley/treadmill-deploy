@@ -21,7 +21,14 @@ export HOSTNAME
 
 # NOTE: Obtaining tickets is needed for the LDAP connection below.
 export KRB5CCNAME=$(mktemp)
-kinit -k -l 1d
+
+# Repeat kinit until successful
+until kinit -k -l 1d;
+do
+    echo Sleeping until server joined to IPA...
+    sleep 10
+done
+
 klist
 
 mkdir -pv ${INSTALL_DIR}
