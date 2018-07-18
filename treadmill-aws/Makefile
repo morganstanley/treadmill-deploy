@@ -53,13 +53,23 @@ install: venv sbin
 		    --only-binary               \
 		    --no-cache-dir              \
 		    --no-index                  \
-		     kazoo[sasl]==2.4.0.dev0 Treadmill Treadmill_AWS
+		     kazoo[sasl]==2.4.0.dev0    \
+		&& pip install --no-cache-dir  -f $(WHEELS)  \
+		    --only-binary               \
+		    --no-cache-dir              \
+		    --no-index                  \
+		    $(TREADMILL_DIR)            \
+		&& pip install --no-cache-dir  -f $(WHEELS)  \
+		    --only-binary               \
+		    --no-cache-dir              \
+		    --no-index                  \
+		    $(TREADMILL_AWS_DIR)
 	virtualenv-3 --relocatable $(VENV)
 	sed -i "s^$(RPMDIR)/BUILD/opt/treadmill^/opt/treadmill^g" \
 		$(RPMDIR)/BUILD/opt/treadmill/bin/activate*
 	cp service/*.service $(RPMDIR)/BUILD
 
-rpm:
+rpm: clean wheels_cache install
 	mkdir -p $(RPMDIR)/SOURCES
 	mkdir -p $(RPMDIR)/SRPMS
 	mkdir -p $(RPMDIR)/RPMS
