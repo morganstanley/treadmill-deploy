@@ -1,5 +1,0 @@
-CLASSPATH=/opt/zookeeper/*
-ZOOMAIN=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.local.only=false org.apache.zookeeper.server.quorum.QuorumPeerMain
-LOG4J=-Dlog4j.configuration=file:///etc/zookeeper/log4j.properties
-JVMFLAGS=-Djava.security.auth.login.config=/etc/zookeeper/jaas.conf -Dorg.treadmill.zk.plugin.configuration=/etc/zookeeper/treadmill.conf -Dsun.security.krb5.debug=false
-ZOOCFG=/etc/zookeeper/zoo.cfg
