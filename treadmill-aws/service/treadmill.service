@@ -1,6 +1,7 @@
 [Unit]
 Description=Treadmill service
-After=network.target
+After=krb5keytab-proxy.service
+BindsTo=krb5keytab-proxy.service
 
 [Service]
 User=root
