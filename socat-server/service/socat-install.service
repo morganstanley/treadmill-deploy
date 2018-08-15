@@ -1,0 +1,15 @@
+[Unit]
+Description=Install Socat Server env variables
+After=cloud-final.service
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+ExecStartPre=/bin/bash -c "until nc -z 169.254.169.254 80; do sleep 5; done"
+ExecStart=/opt/treadmill/bin/syscfg write --prefix socat_ --prefix treadmill_ --envfile /etc/sysconfig/socat-server
+ExecStartPost=/bin/bash -c "echo KRB5CCNAME=/var/spool/tickets/socat.ticket >> /etc/sysconfig/socat-server"
+Restart=no
+
+[Install]
+WantedBy=multi-user.target

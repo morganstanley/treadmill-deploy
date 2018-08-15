@@ -1,0 +1,15 @@
+Socat-server provides an unauthenticated app discovery service for a specific app, running on a high port. This is intended to provide discovery services for clients outside the domain that are unable to run treadmill discovery. 
+
+Once running, you can curl the server at PORT and recieve the command output of treadmill discovery APPNAME
+
+This server requires both Treadmill and Socat-specific user data to start. 
+
+Example yaml:
+---
+treadmill_cell: TMCELL
+treadmill_ldap: ldap://LDAPHOST:389
+treadmill_ldap_suffix: DC=FOO,DC=COM
+treadmill_dns_domain: FOO.COM
+socat_port: PORT
+socat_master_app: PROID.APPNAME
+

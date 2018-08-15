@@ -1,0 +1,18 @@
+[Unit]
+Description=Install socat-server host tickets
+After=cloud-final.service
+After=socat-install.service
+Requires=socat-install.service
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+EnvironmentFile=/etc/sysconfig/socat-server
+ExecStartPre=/bin/bash -c "mkdir -p /var/spool/tickets"
+ExecStartPre=/bin/bash -c "until [[ $(k-realm | wc -c) -ne 0 ]]; do sleep 5; done"
+ExecStart=/bin/bash -c "KRB5CCNAME=/var/spool/tickets/socat.ticket.tmp /bin/kinit -k -l 2d && chown socat:socat /var/spool/tickets/socat.ticket.tmp && mv /var/spool/tickets/socat.ticket.tmp /var/spool/tickets/socat.ticket"
+Restart=no
+
+[Install]
+WantedBy=multi-user.target
