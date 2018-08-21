@@ -1,0 +1,15 @@
+[Unit]
+Description=Socat Endpoint Server
+After=socat-install.service socat-ticket.service
+Requires=socat-install.service socat-ticket.service
+
+[Service]
+User=socat
+Group=socat
+EnvironmentFile=/etc/sysconfig/socat-server
+ExecStart=/opt/socat-server/endpointserver.py
+TimeoutStartSec=30      
+Restart=on-abnormal
+
+[Install]
+WantedBy=default.target
