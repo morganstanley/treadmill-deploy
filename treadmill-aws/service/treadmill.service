@@ -1,13 +1,14 @@
 [Unit]
 Description=Treadmill service
+After=treadmill-install.service
 After=krb5keytab-proxy.service
 BindsTo=krb5keytab-proxy.service
 
 [Service]
 User=root
 Group=root
-ExecStart=/opt/treadmill/bin/syscfg exec -- /opt/treadmill/sbin/start.sh
-Restart=no
+EnvironmentFile=/etc/sysconfig/treadmill
+ExecStart=/opt/treadmill/sbin/start.sh
 
 [Install]
 WantedBy=multi-user.target
