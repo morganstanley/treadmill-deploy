@@ -11,10 +11,22 @@ WHEELS=$(BLD)/wheels
 TREADMILL_DIR=$(PWD)/../../treadmill
 TREADMILL_AWS_DIR=$(PWD)/../../treadmill-aws
 
+TREADMILL_BUILD_N=$(shell git --git-dir ${TREADMILL_DIR}/.git rev-list --count HEAD)
+TREADMILL_AWS_BUILD_N=$(shell git --git-dir ${TREADMILL_AWS_DIR}/.git rev-list --count HEAD)
+TREADMILL_DEPLOY_BUILD_N=$(shell git rev-list --count HEAD)
+
+TREADMILL_DESCRIBE=$(shell git --git-dir=${TREADMILL_DIR}/.git describe --tags HEAD --long)
+TREADMILL_AWS_DESCRIBE=$(shell git --git-dir=${TREADMILL_AWS_DIR}/.git describe --tags HEAD --long)
+TREADMILL_DEPLOY_DESCRIBE=$(shell git describe --tags HEAD --long)
+
+REPO_UNIQ=$(shell echo ${TREADMILL_DESCRIBE}.${TREADMILL_AWS_DESCRIBE}.${TREADMILL_DEPLOY_DESCRIBE} | md5sum - | cut -d ' ' -f 1 | tail -c 9)
+
 REPO_TAG=$(shell git --git-dir=${TREADMILL_AWS_DIR}/.git describe --tags HEAD --long)
 REPO_TAGFMT=$(shell echo ${REPO_TAG} | sed 's/-g/-/')
 REPO_VER=$(shell echo ${REPO_TAGFMT} | cut -d '-' -f 1)
-REPO_REL=$(shell echo ${REPO_TAGFMT} | cut -d '-' -f 2,3 | sed 's/-/_/')
+
+TOTAL_COMMITS=$(shell echo $$(( ${TREADMILL_BUILD_N} + ${TREADMILL_AWS_BUILD_N} + ${TREADMILL_DEPLOY_BUILD_N} )) )
+REPO_REL=${TOTAL_COMMITS}_${REPO_UNIQ}
 
 clean:
 	rm -rf $(BLD)
@@ -67,7 +79,6 @@ install: venv sbin
 	virtualenv-3 --relocatable $(VENV)
 	sed -i "s^$(RPMDIR)/BUILD/opt/treadmill^/opt/treadmill^g" \
 		$(RPMDIR)/BUILD/opt/treadmill/bin/activate*
-	cp service/*.service $(RPMDIR)/BUILD
 
 rpm: clean wheels_cache install
 	mkdir -p $(RPMDIR)/SOURCES
@@ -94,6 +105,8 @@ i:
 	@echo "VENV          : $(VENV)"
 	@echo "WHEELS        : $(WHEELS)"
 	@echo "REPO_VER      : $(REPO_VER)"
+	@echo "REPO_REL      : $(REPO_REL)"
 	@echo "REPO_TAG      : $(REPO_TAG)"
+	@echo "REPO_UNIQ     : $(REPO_UNIQ)"
 
 .PHONY: sbin
