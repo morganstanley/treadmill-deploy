@@ -54,7 +54,7 @@ sbin: \
 	$(VENV)/sbin/opts.sh \
 	$(VENV)/sbin/start.sh \
 	$(VENV)/sbin/start_node.sh \
-	$(VENV)/sbin/start_master.sh
+	$(VENV)/sbin/start_openldap.sh
 
 $(VENV)/sbin/%.sh: ./sbin/%.sh
 	install -D $< $@
