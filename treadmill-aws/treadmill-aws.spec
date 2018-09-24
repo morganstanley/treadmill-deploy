@@ -22,6 +22,9 @@ Treadmill (AWS)
 
 %install
 cp -r %{_builddir}/opt %{buildroot}/opt
+mkdir -p %{buildroot}/lib/systemd/system/
+install -m644 %{_builddir}/krb5keytab-proxy.service %{buildroot}/lib/systemd/system/
+install -m644 %{_builddir}/treadmill.service %{buildroot}/lib/systemd/system/
 
 %post
 
