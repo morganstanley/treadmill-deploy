@@ -115,10 +115,11 @@ trap cleanup EXIT
 # Write userdata to file
 cat << E%O%F > ${tmpdir}/LDAP.yaml
 ---
-treadmill_krb5_realm: ${REALM}
+treadmill_cell: -
 treadmill_dns_domain: ${TREADMILL_DNS_DOMAIN}
 treadmill_ldap: ${TREADMILL_LDAP}
 treadmill_ldap_suffix: ${TREADMILL_LDAP_SUFFIX}
+treadmill_krb5_realm: ${REALM}
 treadmill_proid: ${TREADMILL_PROID}
 treadmill_isa: openldap
 E%O%F
@@ -132,7 +133,7 @@ new_hosts=0
 for i in `seq 1 ${COUNT}`
 do
 	# Check that host does not already exist:
-	if [ $(ipa host-show ldap-${i}.${TREADMILL_DNS_DOMAIN} >/dev/null 2>&1) ]; then
+	if $(ipa host-show ldap-${i}.${TREADMILL_DNS_DOMAIN} >/dev/null 2>&1); then
 		echo 'Host exists; skipping'
 		continue
 	fi
@@ -160,7 +161,7 @@ fi
 #########################
 
 # Check hosts have joined domain 
-for i in `seq 1 ${#SUBNETS[@]}`
+for i in `seq 1 ${COUNT}`
 do
         until ipa host-show ldap-${i}.${TREADMILL_DNS_DOMAIN} | grep -q SSH\ public\ key\ fingerprint
         do
