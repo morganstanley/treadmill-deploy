@@ -72,8 +72,8 @@ export KRB5_KTNAME=/var/spool/keytabs-services/ldap-${HOSTNAME}.keytab
 mkdir -pv ${INSTALL_DIR}
 mkdir -p /var/spool/keytabs-services/
 
-if [ ! -f ${KRB5_KTNAME}]; then
-	ipa-getkeytab -p ldap/${HOSTNAME}@${TREADMILL_KRB_REALM} -k ${KRB5_KTNAME}
+if [ ! -f ${KRB5_KTNAME} ]; then
+	ipa-getkeytab -p ldap/${HOSTNAME}.@${TREADMILL_KRB_REALM} -k ${KRB5_KTNAME}
 fi
 
 chown ${TREADMILL_PROID}:${TREADMILL_PROID} ${KRB5_KTNAME}
