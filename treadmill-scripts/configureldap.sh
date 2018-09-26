@@ -119,7 +119,7 @@ treadmill_cell: -
 treadmill_dns_domain: ${TREADMILL_DNS_DOMAIN}
 treadmill_ldap: ${TREADMILL_LDAP}
 treadmill_ldap_suffix: ${TREADMILL_LDAP_SUFFIX}
-treadmill_krb5_realm: ${REALM}
+treadmill_krb_realm: ${REALM}
 treadmill_proid: ${TREADMILL_PROID}
 treadmill_isa: openldap
 E%O%F
