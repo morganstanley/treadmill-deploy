@@ -37,7 +37,7 @@ $(VENV)/bin/activate:
 	mkdir -p $(VENV)
 	virtualenv-3 $(VENV)                 \
 		&& source $(VENV)/bin/activate   \
-		&& pip install --update pip==10.0   \
+		&& pip install --upgrade pip==10.0   \
 		&& pip install --no-cache-dir --no-index --find-links $(WHEELS) -U setuptools
 	virtualenv-3 --relocatable $(VENV)
 
