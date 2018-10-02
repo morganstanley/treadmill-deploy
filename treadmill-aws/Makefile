@@ -7,6 +7,8 @@ RPMDIR=$(BLD)/rpms
 VENV=$(RPMDIR)/BUILD/opt/treadmill
 WHEELS=$(BLD)/wheels
 
+USE_CACHE=0
+
 # Point to root of Treadmill and Treadmill-AWS repos.
 TREADMILL_DIR=$(PWD)/../../treadmill
 TREADMILL_AWS_DIR=$(PWD)/../../treadmill-aws
@@ -28,28 +30,43 @@ REPO_VER=$(shell echo ${REPO_TAGFMT} | cut -d '-' -f 1)
 TOTAL_COMMITS=$(shell echo $$(( ${TREADMILL_BUILD_N} + ${TREADMILL_AWS_BUILD_N} + ${TREADMILL_DEPLOY_BUILD_N} )) )
 REPO_REL=${TOTAL_COMMITS}_${REPO_UNIQ}
 
+PYTHON=$(shell which python3 2> /dev/null || which python34 2> /dev/null || which python36 2> /dev/null)
+
 clean:
 	rm -rf $(BLD)
 
 venv: $(VENV)/bin/activate
 
+ifeq ($(USE_CACHE),0)
+
 $(VENV)/bin/activate:
 	mkdir -p $(VENV)
-	virtualenv-3 $(VENV)                 \
-		&& source $(VENV)/bin/activate   \
-		&& pip install --upgrade pip==10.0   \
-		&& pip install --no-cache-dir --no-index --find-links $(WHEELS) -U setuptools
-	virtualenv-3 --relocatable $(VENV)
+	$(PYTHON) -mvenv $(VENV)
+	$(VENV)/bin/python -mpip install --upgrade \
+		pip==10.0 setuptools wheel virtualenv
 
 wheels: venv
-	source $(VENV)/bin/activate                                       \
+	source $(VENV)/bin/activate                                           \
 		&& cd $(TREADMILL_DIR)                                        \
 		&& $(TREADMILL_DIR)/scripts/setup_wheel_cache.sh -w $(WHEELS) \
 		&& cd $(TREADMILL_AWS_DIR)                                    \
 		&& $(TREADMILL_DIR)/scripts/setup_wheel_cache.sh -w $(WHEELS)
 
-wheels_cache:
+s3:
+	aws s3 sync $(WHEELS) $(S3_WHEELS_CACHE) --delete
+
+else
+
+wheels:
 	aws s3 sync $(S3_WHEELS_CACHE) $(WHEELS)
+	$(PYTHON) -mvenv $(VENV)
+	$(VENV)/bin/python -mpip install -f $(WHEELS) \
+    		--no-cache-dir                        \
+    		--no-index                            \
+			--upgrade                             \
+		pip==10.0 wheel setuptools virtualenv
+			
+endif
 
 sbin: \
 	$(VENV)/sbin/opts.sh \
@@ -61,28 +78,27 @@ sbin: \
 $(VENV)/sbin/%.sh: ./sbin/%.sh
 	install -D $< $@
 
-install: venv sbin
-	source $(VENV)/bin/activate         \
-		&& pip install --no-cache-dir  -f $(WHEELS)  \
+install: wheels sbin
+	$(VENV)/bin/python -mpip install --no-cache-dir -f $(WHEELS) \
 		    --only-binary               \
 		    --no-cache-dir              \
 		    --no-index                  \
-		     kazoo[sasl]==2.4.0.dev0    \
-		&& pip install --no-cache-dir  -f $(WHEELS)  \
+		     kazoo[sasl]==2.4.0.dev0
+	$(VENV)/bin/python -mpip install --no-cache-dir -f $(WHEELS) \
 		    --only-binary               \
 		    --no-cache-dir              \
 		    --no-index                  \
-		    $(TREADMILL_DIR)            \
-		&& pip install --no-cache-dir  -f $(WHEELS)  \
+		    $(TREADMILL_DIR)
+	$(VENV)/bin/python -mpip install --no-cache-dir -f $(WHEELS) \
 		    --only-binary               \
 		    --no-cache-dir              \
 		    --no-index                  \
 		    $(TREADMILL_AWS_DIR)
-	virtualenv-3 --relocatable $(VENV)
+	$(VENV)/bin/virtualenv --relocatable $(VENV)
 	sed -i "s^$(RPMDIR)/BUILD/opt/treadmill^/opt/treadmill^g" \
 		$(RPMDIR)/BUILD/opt/treadmill/bin/activate*
 
-rpm: clean wheels_cache install
+rpm: clean install
 	mkdir -p $(RPMDIR)/SOURCES
 	mkdir -p $(RPMDIR)/SRPMS
 	mkdir -p $(RPMDIR)/RPMS
@@ -102,6 +118,7 @@ install_rpm:
 	rsync -r $(RPMDIR)/SRPMS $(rpm_install_dir)
 
 i:
+	@echo "PYTHON        : $(PYTHON)"
 	@echo "BLD           : $(BLD)"
 	@echo "RPMDIR        : $(RPMDIR)"
 	@echo "VENV          : $(VENV)"
@@ -110,5 +127,6 @@ i:
 	@echo "REPO_REL      : $(REPO_REL)"
 	@echo "REPO_TAG      : $(REPO_TAG)"
 	@echo "REPO_UNIQ     : $(REPO_UNIQ)"
+	@echo "USE_CACHE     : $(USE_CACHE)"
 
 .PHONY: sbin
