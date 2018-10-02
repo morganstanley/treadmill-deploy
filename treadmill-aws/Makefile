@@ -5,6 +5,7 @@ PWD=$(shell pwd)
 BLD=$(PWD)/build
 RPMDIR=$(BLD)/rpms
 VENV=$(RPMDIR)/BUILD/opt/treadmill
+VENV_SEED=$(BLD)/venv-seed
 WHEELS=$(BLD)/wheels
 
 USE_CACHE=0
@@ -35,18 +36,19 @@ PYTHON=$(shell which python3 2> /dev/null || which python34 2> /dev/null || whic
 clean:
 	rm -rf $(BLD)
 
-venv: $(VENV)/bin/activate
-
 ifeq ($(USE_CACHE),0)
+
+venv: $(VENV)/bin/activate
 
 $(VENV)/bin/activate:
 	mkdir -p $(VENV)
-	$(PYTHON) -mvenv $(VENV)
-	$(VENV)/bin/python -mpip install --upgrade \
+	$(PYTHON) -mvenv $(VENV_SEED)
+	$(VENV_SEED)/bin/python -mpip install --upgrade \
 		pip==10.0 setuptools wheel virtualenv
+	$(VENV_SEED)/bin/virtualenv $(VENV)
 
 wheels: venv
-	source $(VENV)/bin/activate                                           \
+	source $(VENV)/bin/activate                                       \
 		&& cd $(TREADMILL_DIR)                                        \
 		&& $(TREADMILL_DIR)/scripts/setup_wheel_cache.sh -w $(WHEELS) \
 		&& cd $(TREADMILL_AWS_DIR)                                    \
@@ -59,12 +61,13 @@ else
 
 wheels:
 	aws s3 sync $(S3_WHEELS_CACHE) $(WHEELS)
-	$(PYTHON) -mvenv $(VENV)
-	$(VENV)/bin/python -mpip install -f $(WHEELS) \
-    		--no-cache-dir                        \
-    		--no-index                            \
-			--upgrade                             \
+	$(PYTHON) -mvenv $(VENV_SEED)
+	$(VENV_SEED)/bin/python -mpip install -f $(WHEELS) \
+    		--no-cache-dir                             \
+    		--no-index                                 \
+			--upgrade                                  \
 		pip==10.0 wheel setuptools virtualenv
+	$(VENV_SEED)/bin/virtualenv $(VENV)
 			
 endif
 
@@ -94,7 +97,7 @@ install: wheels sbin
 		    --no-cache-dir              \
 		    --no-index                  \
 		    $(TREADMILL_AWS_DIR)
-	$(VENV)/bin/virtualenv --relocatable $(VENV)
+	$(VENV_SEED)/bin/virtualenv --relocatable $(VENV)
 	sed -i "s^$(RPMDIR)/BUILD/opt/treadmill^/opt/treadmill^g" \
 		$(RPMDIR)/BUILD/opt/treadmill/bin/activate*
 
