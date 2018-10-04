@@ -48,7 +48,8 @@ $(VENV)/bin/activate:
 	$(VENV_SEED)/bin/virtualenv $(VENV)
 
 wheels: venv
-	source $(VENV)/bin/activate                                       \
+	source $(VENV)/bin/activate                                           \
+		&& pip install -U pip==10.0 wheel setuptools virtualenv       \
 		&& cd $(TREADMILL_DIR)                                        \
 		&& $(TREADMILL_DIR)/scripts/setup_wheel_cache.sh -w $(WHEELS) \
 		&& cd $(TREADMILL_AWS_DIR)                                    \
