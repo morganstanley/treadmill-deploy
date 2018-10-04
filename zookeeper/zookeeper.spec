@@ -20,6 +20,7 @@ ZooKeeper is a centralized service for maintaining configuration information, na
 
 %prep
 tar -xvzf %{_topdir}/SOURCES/zookeeper-%{version}.tar.gz zookeeper-%{version}/zookeeper-%{version}.jar 'zookeeper-%{version}/lib/*jar'
+mv -v %{_topdir}/SOURCES/zookeeper-authorizers.jar %{_topdir}/BUILD/zookeeper-%{version}/lib/
 
 %build
 
