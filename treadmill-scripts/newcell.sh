@@ -11,9 +11,11 @@ display_help() {
     echo "   -c, --cell             New Treadmill cell name; e.g. userdev"
     echo "   -d, --domain           IPA domain; e.g. ipa.foo.com"
     echo "   -l, --ldap             LDAP servers; e.g. -l ldap://ldap.foo.com:389 -l ldap://ldap2.foo.com:389"
+    echo "   --ldapsuffix           LDAP suffix; e.g. dc=foo,dc=com"
     echo "   -r, --registry         Docker registries; e.g -r reg1.foo.com:8000 -r reg2.foo.com:8000"
     echo "   -p, --proid            Zookeeper auth user; e.g admin"
     echo "   --location             Cell location; e.g. us-east-1"
+    echo "   --realm                IPA realm; e.g. IPA.FOO.COM"
     echo
     exit 0
 }
@@ -67,6 +69,16 @@ case $key in
     shift # past argument
     shift # past value
     ;;
+    --realm)
+    REALM="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    --ldapsuffix)
+    TREADMILL_LDAP_SUFFIX="$2"
+    shift # past argument
+    shift # past value
+    ;;
     -h|--help)
     display_help
     ;;
@@ -89,9 +101,11 @@ echo "AWS AMI           = ${AMI}"
 echo "TREADMILL CELL    = ${TREADMILL_CELL}"
 echo "TREADMILL DOMAIN  = ${TREADMILL_DNS_DOMAIN}"
 echo "TREADMILL LDAPS   = ${LDAP_SRVS[@]}"
+echo "LDAP SUFFIX       = ${TREADMILL_LDAP_SUFFIX}"
 echo "DOCKER REGISTRIES = ${DOCKER_REGISTRIES[@]}"
 echo "PROID             = ${PROID}"
 echo "LOCATION          = ${LOCATION}"
+echo "REALM             = ${REALM}"
 echo
 
 echo "==="
@@ -163,7 +177,6 @@ do
 done
 echo -e "LDAP configured for cell.\n"
 
-
 # Create Zookeepers
 echo -e "===\nStarting Zookeepers...\n"
 for i in $(seq 1 3)
@@ -174,6 +187,8 @@ treadmill_cell: ${TREADMILL_CELL}
 treadmill_ldap: ${TREADMILL_LDAP}
 treadmill_ldap_suffix: ${TREADMILL_LDAP_SUFFIX}
 treadmill_dns_domain: ${TREADMILL_DNS_DOMAIN}
+treadmill_krb_realm: ${REALM}
+treadmill_proid: ${PROID}
 treadmill_zookeeper_myid: "${i}"
 treadmill_isa: zookeeper
 E%O%F
@@ -269,6 +284,8 @@ treadmill_cell: ${TREADMILL_CELL}
 treadmill_ldap: ${TREADMILL_LDAP}
 treadmill_ldap_suffix: ${TREADMILL_LDAP_SUFFIX}
 treadmill_dns_domain: ${TREADMILL_DNS_DOMAIN}
+treadmill_proid: ${PROID}
+treadmill_krb_realm: ${REALM}
 treadmill_isa: node 
 E%O%F
         hostname=`treadmill admin aws instance create \
