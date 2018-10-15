@@ -115,7 +115,7 @@ trap cleanup EXIT
 # Write userdata to file
 cat << E%O%F > ${tmpdir}/LDAP.yaml
 ---
-treadmill_cell: -
+treadmill_cell:
 treadmill_dns_domain: ${TREADMILL_DNS_DOMAIN}
 treadmill_ldap: ${TREADMILL_LDAP}
 treadmill_ldap_suffix: ${TREADMILL_LDAP_SUFFIX}
@@ -147,7 +147,7 @@ do
                  --hostname ldap-${i} \
                  --role ldap`
         echo ${hostname}
-	ipa service-add --force ldap/${hostname}.@${REALM} >/dev/null 2>&1 && echo "IPA Service Created"
+	ipa service-add --force ldap/${hostname}@${REALM} >/dev/null 2>&1 && echo "IPA Service Created"
         new_hosts+=1
 done
 
@@ -187,8 +187,15 @@ echo -e "LDAP online.\n"
 #########################
 
 echo -e "Bootstrapping LDAP:.\n"
-sleep 5
-treadmill admin ldap init
-sleep 2
-treadmill admin ldap schema --update
+until treadmill admin ldap init >/dev/null 2>&1
+do 
+	echo 'Initializing LDAP namespace'
+	sleep 5; 
+done
 
+until treadmill admin ldap schema --update >/dev/null 2>&1
+do 
+	echo 'Writing Treadmill LDAP schema'
+	sleep 5; 
+done
+echo 'LDAP servers online'
