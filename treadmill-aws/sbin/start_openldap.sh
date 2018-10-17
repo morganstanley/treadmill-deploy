@@ -56,6 +56,7 @@ echo "Installing Treadmill OpenLDAP: ${INSTALL_DIR}"
 
 HOSTNAME=$(hostname --fqdn)
 export HOSTNAME
+export KRB5CCNAME=$(mktemp)
 
 # Repeat kinit until successful
 until kinit -k -l 1d;

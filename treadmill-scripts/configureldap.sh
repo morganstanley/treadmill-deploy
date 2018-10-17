@@ -115,7 +115,7 @@ trap cleanup EXIT
 # Write userdata to file
 cat << E%O%F > ${tmpdir}/LDAP.yaml
 ---
-treadmill_cell:
+treadmill_cell: openldap
 treadmill_dns_domain: ${TREADMILL_DNS_DOMAIN}
 treadmill_ldap: ${TREADMILL_LDAP}
 treadmill_ldap_suffix: ${TREADMILL_LDAP_SUFFIX}
