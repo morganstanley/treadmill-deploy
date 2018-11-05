@@ -28,13 +28,11 @@ done
 
 klist
 
-until hostname
+until HOSTNAME=$(hostname --fqdn)
 do 
   echo "Waiting for D-BUS to return hostname..."
   sleep 2
 done
-
-HOSTNAME=$(hostname --fqdn)
 export HOSTNAME
 
 mkdir -pv ${INSTALL_DIR}
