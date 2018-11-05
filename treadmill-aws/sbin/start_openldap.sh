@@ -54,15 +54,21 @@ echo "Installing Treadmill OpenLDAP: ${INSTALL_DIR}"
 
 /bin/mount --make-rprivate /
 
-HOSTNAME=$(hostname --fqdn)
-export HOSTNAME
-
 # Repeat kinit until successful
 until kinit -k -l 1d;
 do
     echo Sleeping until server joined to IPA...
     sleep 10
 done
+
+until hostname
+do
+  echo "Waiting for D-BUS to return hostname..."
+  sleep 2
+done
+
+HOSTNAME=$(hostname --fqdn)
+export HOSTNAME
 
 klist
 

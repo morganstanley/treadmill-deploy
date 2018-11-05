@@ -52,17 +52,28 @@ shift $((OPTIND-1))
 
 echo "Installing Treadmill Zookeeper: $INSTALL_DIR"
 
-HOSTNAME=$(hostname --fqdn)
-export HOSTNAME
-
 if [ $UID == 0 ]; then
     /bin/mount --make-rprivate /
 
     # NOTE: Obtaining tickets is needed for the LDAP connection below.
     export KRB5CCNAME=$(mktemp)
-    kinit -k -l 1d
+
+    until kinit -k -l 1d
+    do
+        echo Sleeping until server joined to IPA...
+        sleep 5
+    done
 fi    
 klist
+
+until hostname
+do
+  echo "Waiting for D-BUS to return hostname..."
+  sleep 2
+done
+
+HOSTNAME=$(hostname --fqdn)
+export HOSTNAME
 
 export TREADMILL_KRB_REALM=$(k-realm)
 
