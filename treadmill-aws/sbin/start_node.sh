@@ -16,9 +16,6 @@ echo "Installing Treadmill node: $INSTALL_DIR"
 
 /bin/mount --make-rprivate /
 
-HOSTNAME=$(hostname --fqdn)
-export HOSTNAME
-
 # NOTE: Obtaining tickets is needed for the LDAP connection below.
 export KRB5CCNAME=$(mktemp)
 
@@ -30,6 +27,15 @@ do
 done
 
 klist
+
+until hostname
+do 
+  echo "Waiting for D-BUS to return hostname..."
+  sleep 2
+done
+
+HOSTNAME=$(hostname --fqdn)
+export HOSTNAME
 
 mkdir -pv ${INSTALL_DIR}
 
