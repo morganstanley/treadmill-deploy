@@ -66,13 +66,11 @@ if [ $UID == 0 ]; then
 fi    
 klist
 
-until hostname
+until HOSTNAME=$(hostname --fqdn)
 do
   echo "Waiting for D-BUS to return hostname..."
   sleep 2
 done
-
-HOSTNAME=$(hostname --fqdn)
 export HOSTNAME
 
 export TREADMILL_KRB_REALM=$(k-realm)
