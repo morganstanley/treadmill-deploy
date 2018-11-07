@@ -90,6 +90,7 @@ ${DISTRO}/bin/treadmill \
         --install-dir ${INSTALL_DIR} \
     openldap \
         --owner ${TREADMILL_PROID} \
+        --ldap-admins ${TREADMILL_LDAP_ADMINS} \
         --uri ldap://${HOSTNAME}:22389 \
 	--env linux \
         --gssapi \

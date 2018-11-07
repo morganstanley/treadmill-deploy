@@ -12,11 +12,13 @@ display_help() {
     echo "   -d, --domain           IPA domain; e.g. ipa.foo.com"
     echo "   -l, --ldapsuffix       LDAP suffix; e.g. dc=foo,dc=com"
     echo "   -r, --realm            Realm; e.g. FOO.COM"
-    echo "   -p, --proid            LDAP auth user; e.g admin"
+    echo "   -p, --proid            Treadmill proid; e.g. admin"
+    echo "   --ldapadmin            LDAP admins; e.g --ldapadmin admin --ldapadmin priv"
     echo
     exit 0
 }
 SUBNETS=()
+ADMINS=()
 
 POSITIONAL=()
 while [[ $# -gt 0 ]]
@@ -54,6 +56,11 @@ case $key in
     shift # past argument
     shift # past value
     ;;
+    --ldapadmin)
+    ADMINS=("${ADMINS[@]}" "$2")
+    shift # past argument
+    shift # past value
+    ;;
     -h|--help)
     display_help
     ;;
@@ -68,6 +75,7 @@ echo "TREADMILL DOMAIN  = ${TREADMILL_DNS_DOMAIN}"
 echo "LDAP SUFFIX       = ${TREADMILL_LDAP_SUFFIX}"
 echo "REALM             = ${REALM}"
 echo "PROID             = ${TREADMILL_PROID}"
+echo "LDAP ADMINS       = ${ADMINS[@]}"
 echo
 
 echo "==="
@@ -112,6 +120,10 @@ function cleanup {
 }
 trap cleanup EXIT
 
+function join { local IFS="$1"; shift; echo "$*"; }
+
+TREADMILL_LDAP_ADMINS=$(join , ${ADMINS[@]})
+
 # Write userdata to file
 cat << E%O%F > ${tmpdir}/LDAP.yaml
 ---
@@ -121,6 +133,7 @@ treadmill_ldap: ${TREADMILL_LDAP}
 treadmill_ldap_suffix: ${TREADMILL_LDAP_SUFFIX}
 treadmill_krb_realm: ${REALM}
 treadmill_proid: ${TREADMILL_PROID}
+treadmill_ldap_admins: ${TREADMILL_LDAP_ADMINS}
 treadmill_isa: openldap
 E%O%F
 
