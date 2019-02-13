@@ -98,6 +98,8 @@ ${DISTRO}/bin/treadmill \
         --master-id ${TREADMILL_ZOOKEEPER_MYID} \
         --no-run
 
+ln -s ${INSTALL_DIR}/treadmill /treadmill
+
 echo Starting Treadmill Zookeeper.
 if [ $UID == 0 ]; then
     exec ${INSTALL_DIR}/treadmill/bin/run.sh
