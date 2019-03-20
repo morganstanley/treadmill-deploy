@@ -34,6 +34,7 @@ do
   sleep 2
 done
 export HOSTNAME
+export TREADMILL_HOSTNAME=${HOSTNAME}
 
 mkdir -pv ${INSTALL_DIR}
 
