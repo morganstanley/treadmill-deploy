@@ -41,19 +41,27 @@ mkdir -pv ${INSTALL_DIR}
 # Try to get cell and server configuration.
 # If LDAP is down, this will fail but if an existing config is already dumped,
 # the node will still start.
-${DISTRO}/bin/treadmill \
-    --outfmt yaml \
-    admin ldap cell configure ${TREADMILL_CELL} \
-    > ${INSTALL_DIR}/cell_config.yml.tmp \
-    && mv -v ${INSTALL_DIR}/cell_config.yml{.tmp,} \
-    || true
+while [ ! -f ${INSTALL_DIR}/cell_config.yml]
+do
+    ${DISTRO}/bin/treadmill \
+        --outfmt yaml \
+        --debug \
+        admin ldap cell configure ${TREADMILL_CELL} \
+        > ${INSTALL_DIR}/cell_config.yml.tmp \
+        && mv -v ${INSTALL_DIR}/cell_config.yml{.tmp,} \
+        || sleep 1
+done
 
-${DISTRO}/bin/treadmill \
-    --outfmt yaml \
-    admin ldap server configure ${HOSTNAME} \
-    > ${INSTALL_DIR}/server_config.yml.tmp \
-    && mv -v ${INSTALL_DIR}/server_config.yml{.tmp,} \
-    || true
+while [ ! -f ${INSTALL_DIR}/server_config.yml]
+do
+    ${DISTRO}/bin/treadmill \
+        --outfmt yaml \
+        --debug \
+        admin ldap server configure ${HOSTNAME} \
+        > ${INSTALL_DIR}/server_config.yml.tmp \
+        && mv -v ${INSTALL_DIR}/server_config.yml{.tmp,} \
+        || sleep 1
+done
 
 ${DISTRO}/bin/treadmill \
     --debug \
