@@ -41,7 +41,7 @@ mkdir -pv ${INSTALL_DIR}
 # Try to get cell and server configuration.
 # If LDAP is down, this will fail but if an existing config is already dumped,
 # the node will still start.
-while [ ! -f ${INSTALL_DIR}/cell_config.yml]
+while [ ! -f ${INSTALL_DIR}/cell_config.yml ]
 do
     ${DISTRO}/bin/treadmill \
         --outfmt yaml \
@@ -52,7 +52,7 @@ do
         || sleep 1
 done
 
-while [ ! -f ${INSTALL_DIR}/server_config.yml]
+while [ ! -f ${INSTALL_DIR}/server_config.yml ]
 do
     ${DISTRO}/bin/treadmill \
         --outfmt yaml \
