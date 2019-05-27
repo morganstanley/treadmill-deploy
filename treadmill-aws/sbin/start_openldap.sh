@@ -4,7 +4,7 @@ set -e
 
 if [ -z ${TREADMILL_INSTALL_DIR} ]; then
     TREADMILL_INSTALL_DIR=/var/lib/treadmill-openldap
-fi    
+fi
 
 if [ -z ${DISTRO} ]; then
     DISTRO=$(cd $(dirname $0)/.. && pwd)
@@ -18,12 +18,12 @@ function openldap_usage {
     MSG=$1
     if [ "${MSG}" != "" ]; then
         echo Usage error:
-        echo 
+        echo
         echo "  ${MSG}"
         echo
     fi
     cat << USAGE
-Usage: 
+Usage:
     $0 [OPTIONS]
 
 Options:
@@ -77,6 +77,7 @@ mkdir -pv ${INSTALL_DIR}
 mkdir -p /var/spool/keytabs-services/
 
 if [ ! -f ${KRB5_KTNAME} ]; then
+    ipa service-add ldap/${HOSTNAME}@${TREADMILL_KRB_REALM} || /bin/true
 	ipa-getkeytab -p ldap/${HOSTNAME}@${TREADMILL_KRB_REALM} -k ${KRB5_KTNAME}
 fi
 
