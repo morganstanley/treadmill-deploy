@@ -6,7 +6,7 @@ set -e
 
 if [ -z $TREADMILL_INSTALL_DIR ]; then
     TREADMILL_INSTALL_DIR=/var/lib/treadmill-zookeeper
-fi    
+fi
 
 INSTALL_DIR=$TREADMILL_INSTALL_DIR
 unset TREADMILL_INSTALL_DIR
@@ -16,12 +16,12 @@ function zookeeper_usage {
     MSG=$1
     if [ "$MSG" != "" ]; then
         echo Usage error:
-        echo 
+        echo
         echo "  $MSG"
         echo
     fi
     cat << USAGE
-Usage: 
+Usage:
     $0 [OPTIONS]
 
 Options:
@@ -63,7 +63,7 @@ if [ $UID == 0 ]; then
         echo Sleeping until server joined to IPA...
         sleep 5
     done
-fi    
+fi
 klist
 
 until HOSTNAME=$(hostname --fqdn)
@@ -97,6 +97,13 @@ ${DISTRO}/bin/treadmill \
     zookeeper \
         --master-id ${TREADMILL_ZOOKEEPER_MYID} \
         --no-run
+
+export KRB5_KTNAME=${INSTALL_DIR}/treadmill/zookeeper/zookeeper.keytab
+if [ ! -f ${KRB5_KTNAME} ]; then
+    ipa service-add ${TREADMILL_PROID}/${HOSTNAME}@${TREADMILL_KRB_REALM} || /bin/true
+    ipa-getkeytab -p ${TREADMILL_PROID}/${HOSTNAME}@${TREADMILL_KRB_REALM} -k ${KRB5_KTNAME}
+fi
+
 
 echo Starting Treadmill Zookeeper.
 if [ $UID == 0 ]; then
